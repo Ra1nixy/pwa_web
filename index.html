@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manajemen Toko</title>
+  <link rel="manifest" href="manifest.json">
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="icon-192x192.png" type="image/png">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Side Navigation -->
+    <nav class="side-nav">
+      <div class="nav-header">
+        <i class="fas fa-store-alt"></i>
+        <h2>My Store</h2>
+      </div>
+      <ul class="nav-menu">
+        <li class="active" data-section="inventory">
+          <i class="fas fa-boxes"></i>
+          <span>Inventory</span>
+        </li>
+        <li data-section="cashier">
+          <i class="fas fa-cash-register"></i>
+          <span>Kasir</span>
+        </li>
+        <li data-section="reports">
+          <i class="fas fa-chart-bar"></i>
+          <span>Laporan</span>
+        </li>
+      </ul>
+      <div class="nav-footer">
+        <div class="user-profile">
+          <i class="fas fa-user-circle"></i>
+          <span>Admin</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Header -->
+      <header class="app-header">
+        <div class="header-left">
+          <h1 id="section-title">Manajemen Barang</h1>
+        </div>
+        <div class="header-right">
+          <button id="addBtn" class="btn-primary">
+            <i class="fas fa-plus"></i> Tambah Barang
+          </button>
+        </div>
+      </header>
+
+      <!-- Inventory Section (Default) -->
+      <section id="inventory-section" class="content-section active">
+        <div class="search-bar">
+          <i class="fas fa-search"></i>
+          <input type="text" id="searchItem" placeholder="Cari barang...">
+        </div>
+        
+        <div class="item-list" id="itemList">
+          <!-- Items will be loaded via JavaScript -->
+        </div>
+      </section>
+
+      <!-- Cashier Section -->
+      <section id="cashier-section" class="content-section">
+        <div class="cashier-container">
+          <div class="products-panel">
+            <div class="search-bar">
+              <i class="fas fa-search"></i>
+              <input type="text" id="searchProduct" placeholder="Cari produk...">
+            </div>
+            <div class="product-grid" id="productGrid">
+              <!-- Products will be loaded here -->
+            </div>
+          </div>
+          
+          <div class="cart-panel">
+            <div class="cart-header">
+              <h3><i class="fas fa-shopping-cart"></i> Keranjang Belanja</h3>
+              <div class="cart-summary">
+                <span>Total Item: <span id="totalItems">0</span></span>
+                <span>Total Harga: Rp<span id="totalPrice">0</span></span>
+              </div>
+            </div>
+            
+            <div class="cart-items" id="cartItems">
+              <!-- Cart items will appear here -->
+              <div class="empty-cart">
+                <i class="fas fa-cart-arrow-down"></i>
+                <p>Keranjang kosong</p>
+              </div>
+            </div>
+            
+            <div class="cart-actions">
+              <button id="clearCart" class="btn-danger">
+                <i class="fas fa-trash"></i> Kosongkan
+              </button>
+              <button id="checkout" class="btn-success">
+                <i class="fas fa-credit-card"></i> Bayar (Rp<span id="checkoutAmount">0</span>)
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Reports Section -->
+      <section id="reports-section" class="content-section">
+        <div class="reports-container">
+          <div class="stats-cards">
+            <div class="stat-card">
+              <div class="stat-icon bg-blue">
+                <i class="fas fa-boxes"></i>
+              </div>
+              <div class="stat-info">
+                <h3>Total Produk</h3>
+                <p id="totalProducts">0</p>
+              </div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-icon bg-green">
+                <i class="fas fa-shopping-cart"></i>
+              </div>
+              <div class="stat-info">
+                <h3>Transaksi Hari Ini</h3>
+                <p id="todayTransactions">0</p>
+              </div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-icon bg-orange">
+                <i class="fas fa-money-bill-wave"></i>
+              </div>
+              <div class="stat-info">
+                <h3>Pendapatan Hari Ini</h3>
+                <p id="todayRevenue">Rp0</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="recent-transactions">
+            <h3><i class="fas fa-history"></i> Transaksi Terakhir</h3>
+            <table id="transactionsTable">
+              <thead>
+                <tr>
+                  <th>Waktu</th>
+                  <th>Items</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Transactions will be loaded here -->
+                <tr>
+                  <td colspan="3" class="no-data">Tidak ada transaksi</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Modal Forms -->
+    <div class="modal" id="itemModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="modalTitle">Tambah Barang</h2>
+          <button class="close-modal">&times;</button>
+        </div>
+        <form id="itemForm">
+          <input type="hidden" id="itemId">
+          <div class="form-group">
+            <label for="itemName"><i class="fas fa-tag"></i> Nama Barang</label>
+            <input type="text" id="itemName" required>
+          </div>
+          <div class="form-group">
+            <label for="itemQty"><i class="fas fa-boxes"></i> Jumlah Stok</label>
+            <input type="number" id="itemQty" required>
+          </div>
+          <div class="form-group">
+            <label for="itemPrice"><i class="fas fa-money-bill-wave"></i> Harga (Rp)</label>
+            <input type="number" id="itemPrice" required>
+          </div>
+          <div class="form-group">
+            <label for="itemCategory"><i class="fas fa-list"></i> Kategori</label>
+            <select id="itemCategory">
+              <option value="general">General</option>
+              <option value="food">Makanan</option>
+              <option value="drink">Minuman</option>
+              <option value="electronics">Elektronik</option>
+            </select>
+          </div>
+          <div class="form-actions">
+            <button type="button" id="cancelBtn" class="btn-secondary">
+              <i class="fas fa-times"></i> Batal
+            </button>
+            <button type="submit" class="btn-primary">
+              <i class="fas fa-save"></i> Simpan
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal" id="paymentModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2><i class="fas fa-credit-card"></i> Pembayaran</h2>
+          <button class="close-modal">&times;</button>
+        </div>
+        <div class="payment-details">
+          <div class="payment-summary">
+            <p>Total Belanja: <span id="paymentTotal">Rp0</span></p>
+            <p>Dibayar: <span id="amountPaid">Rp0</span></p>
+            <p>Kembalian: <span id="changeAmount">Rp0</span></p>
+          </div>
+          
+          <div class="payment-methods">
+            <h3>Metode Pembayaran</h3>
+            <div class="method-options">
+              <label>
+                <input type="radio" name="paymentMethod" value="cash" checked>
+                <i class="fas fa-money-bill-wave"></i> Tunai
+              </label>
+              <label>
+                <input type="radio" name="paymentMethod" value="debit">
+                <i class="fas fa-credit-card"></i> Debit
+              </label>
+              <label>
+                <input type="radio" name="paymentMethod" value="qris">
+                <i class="fas fa-qrcode"></i> QRIS
+              </label>
+            </div>
+          </div>
+          
+          <div class="cash-payment">
+            <label for="cashAmount">Jumlah Uang</label>
+            <input type="number" id="cashAmount" placeholder="Masukkan jumlah uang">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button id="cancelPayment" class="btn-secondary">
+            <i class="fas fa-times"></i> Batal
+          </button>
+          <button id="confirmPayment" class="btn-success">
+            <i class="fas fa-check"></i> Konfirmasi
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
